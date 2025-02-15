@@ -1,0 +1,10 @@
+{
+    "name": "hackason_container",
+    "image": "24_0044/cuda_dnn:1.0.0",
+    "runArgs": [
+        "--gpus",
+        "all",
+        "--name",
+        "cuda_container"
+    ]
+}

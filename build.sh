@@ -1,0 +1,1 @@
+docker image build -t 24_0044/cuda_dnn:1.0.0 .
