@@ -26,8 +26,9 @@ def load_models(device: str | torch.device) -> tuple[Wav2Vec2FeatureExtractor, H
 def read_audio(file_path: str) -> tuple[np.ndarray, int]:
     sound = AudioSegment.from_file(file_path, file_path.split(".")[-1])
 
+    assert sound.channels == 1
+
     wav = np.array(sound.get_array_of_samples(), dtype=np.float32)
-    wav = wav.reshape(-1, sound.channels).mean(axis=-1)
     fps = sound.frame_rate
     fps = 16000
 

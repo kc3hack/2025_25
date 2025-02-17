@@ -3,19 +3,25 @@ import numpy as np
 from functools import reduce
 import os
 
+def change_frame_rate(wave: np.ndarray, fps_before: int, fps_after: int) -> np.ndarray:
+    pass
+
 def main():
     dir_name = "./src/assets/audio/mp3/"
     file_name = "NOUlyulQ30I.mp3"
 
+    # 音声ファイルを読み込み
     sound = AudioSegment.from_file(dir_name + file_name, "mp3")
 
+    # numpyに変換
     wav = np.array(sound.get_array_of_samples())
     channels = sound.channels
     fps = sound.frame_rate
 
-    wav = wav.reshape(-1, channels)
+    wav = wav.reshape(-1, channels).mean(axis=-1)
 
-    period = (fps * 5)
+    period_seconds = 5
+    period = (fps * period_seconds)
 
     sub_dir_name = dir_name + reduce(lambda p,c: p+"."+c, file_name.split(".")[:-1]) + "/"
     if not os.path.isdir(sub_dir_name):
@@ -25,11 +31,15 @@ def main():
         w = wav[i*period:(i+1)*period]
         w = w.reshape(-1)
 
+        # サンプリング周波数を変える
+        fps_after = 16000
+        w = change_frame_rate(w, fps, fps_after)
+
         s = AudioSegment(
             data=w.astype("int16").tobytes(),
             sample_width=2,
-            frame_rate=fps,
-            channels=channels
+            frame_rate=fps_after,
+            channels=1
         )
         
         section_id = str(i)
