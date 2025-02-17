@@ -30,7 +30,6 @@ def read_audio(file_path: str) -> tuple[np.ndarray, int]:
 
     wav = np.array(sound.get_array_of_samples(), dtype=np.float32)
     fps = sound.frame_rate
-    fps = 16000
 
     return wav, fps
 
@@ -71,11 +70,6 @@ def main():
     src_dir = "./src/assets/audio/mp3/"
     dist_dir = "./src/assets/tensor/"
     audio_id = "NOUlyulQ30I"
-
-    # file_names = os.listdir(src_dir + audio_id)
-
-    # for file_name in file_names:
-    #     extract_file_feature(feature_extractor, model, src_dir, dist_dir, audio_id, file_name)
 
     extract_file_features(feature_extractor, model, src_dir, dist_dir, audio_id)
 
