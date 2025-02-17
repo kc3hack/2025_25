@@ -4,7 +4,25 @@ from functools import reduce
 import os
 
 def change_frame_rate(wave: np.ndarray, fps_before: int, fps_after: int) -> np.ndarray:
-    pass
+    duration = wave.shape[0]/fps_before
+
+    assert float(duration).is_integer()
+
+    duration = int(duration)
+    
+    spec = np.fft.fft(wave)
+
+    mask = np.zeros_like(spec)
+    n = int(fps_after/2)
+    mask[:n] = np.ones(n)
+    spec = spec*mask
+    
+    wave = np.fft.ifft(spec)
+
+    indexs = np.floor(np.arange(fps_after*duration) * fps_before/fps_after).astype(np.int32)
+    wave = wave[indexs]
+
+    return wave
 
 def main():
     dir_name = "./src/assets/audio/mp3/"
