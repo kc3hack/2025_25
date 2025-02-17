@@ -34,7 +34,7 @@ def read_audio(file_path: str) -> tuple[np.ndarray, int]:
 
     return wav, fps
 
-def extract_features(feature_extractor: Wav2Vec2FeatureExtractor, model: HubertModel, wav: np.ndarray) -> torch.Tensor:
+def forward_feature(feature_extractor: Wav2Vec2FeatureExtractor, model: HubertModel, wav: np.ndarray) -> torch.Tensor:
     inputs = feature_extractor(
         wav,
         return_tensors="pt",
@@ -46,6 +46,24 @@ def extract_features(feature_extractor: Wav2Vec2FeatureExtractor, model: HubertM
 
     return outputs.last_hidden_state
 
+def extract_file_feature(feature_extractor: Wav2Vec2FeatureExtractor, model: HubertModel, src_dir: str, dist_dir: str, audio_id: str, file_name: str) -> None:
+    wav, fps = read_audio(src_dir + audio_id + "/" + file_name)
+    assert fps == 16000
+
+    features = forward_feature(feature_extractor, model, wav)
+
+    sub_dir_name = dist_dir + audio_id + "/"
+    if not os.path.isdir(sub_dir_name):
+        os.mkdir(sub_dir_name)
+
+    torch.save(features, sub_dir_name + reduce(lambda p,c: p+"."+c, file_name.split(".")[:-1]) + ".pth")
+
+def extract_file_features(feature_extractor: Wav2Vec2FeatureExtractor, model: HubertModel, src_dir: str, dist_dir: str, audio_id: str) -> None:
+    file_names = os.listdir(src_dir + audio_id)
+
+    for file_name in file_names:
+        extract_file_feature(feature_extractor, model, src_dir, dist_dir, audio_id, file_name)
+
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     feature_extractor, model = load_models(device)
@@ -53,18 +71,13 @@ def main():
     src_dir = "./src/assets/audio/mp3/"
     dist_dir = "./src/assets/tensor/"
     audio_id = "NOUlyulQ30I"
-    file_name = "0000.mp3"
 
-    wav, fps = read_audio(src_dir + audio_id + "/" + file_name)
-    assert fps == 16000
+    # file_names = os.listdir(src_dir + audio_id)
 
-    features = extract_features(feature_extractor, model, wav)
+    # for file_name in file_names:
+    #     extract_file_feature(feature_extractor, model, src_dir, dist_dir, audio_id, file_name)
 
-    sub_dir_name = dist_dir + audio_id + "/"
-    if not os.path.isdir(sub_dir_name):
-        os.mkdir(sub_dir_name)
-
-    torch.save(features, sub_dir_name + reduce(lambda p,c: p+"."+c, file_name.split(".")[:-1]) + ".pth")
+    extract_file_features(feature_extractor, model, src_dir, dist_dir, audio_id)
 
 if __name__ == "__main__":
     main()
