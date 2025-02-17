@@ -4,3 +4,4 @@ pydub
 opencv-python
 jupyter
 moviepy
+pytubefix
