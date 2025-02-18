@@ -1,0 +1,1 @@
+docker image build -t 24_0044/hackason:1.0.0 .
