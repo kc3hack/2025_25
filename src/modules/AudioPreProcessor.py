@@ -35,7 +35,7 @@ class AudioPreProcessor:
 
         wave = np.fft.ifft(spec, axis=-1).real
 
-        return wave[:, :fps]
+        return wave[:, :fps].reshape(-1)
     
     def standardize(self, wave: np.ndarray) -> np.ndarray:
         mean = wave.mean()
