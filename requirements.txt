@@ -5,3 +5,4 @@ opencv-python
 jupyter
 moviepy
 yt_dlp
+openai-whisper
