@@ -1,23 +1,43 @@
 import { useState } from "react";
-import { predictRegion } from "./api";
+import { predictRegion } from "./api"; // API通信を担う関数
+import AudioRecorder from "./AudioRecorder"; // 録音コンポーネント
 import "./App.css";
 
 function App() {
   const [result, setResult] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(null); // 録音データを保存
+
+  // 録音データが取得されたときに呼び出される
+  const handleAudioData = (blob) => {
+    setAudioBlob(blob);
+  };
 
   const handlePredict = async () => {
-    // 仮の音声データ（録音機能がないため）
-    const audioBlob = new Blob(["dummy audio data"], { type: "audio/wav" });
+    if (!audioBlob) {
+      alert("音声を録音してください");
+      return;
+    }
 
-    const prediction = await predictRegion(audioBlob);
-    setResult(prediction);
+    try {
+      const prediction = await predictRegion(audioBlob);
+      setResult(prediction);
+    } catch (error) {
+      console.error("Error during prediction:", error);
+      setResult({ error: "エラーが発生しました" });
+    }
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>出身地判定アプリ</h1>
-        <button onClick={handlePredict}>音声を送信</button>
+
+        {/* 録音コンポーネント */}
+        <AudioRecorder onAudioData={handleAudioData} />
+
+        <button onClick={handlePredict} disabled={!audioBlob}>
+          音声を送信
+        </button>
 
         {result && (
           <div>

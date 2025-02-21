@@ -1,20 +1,22 @@
-export async function predictRegion(audioBlob) {
-    const formData = new FormData();
-    formData.append("file", audioBlob, "audio.wav"); // "file" は FastAPI のエンドポイントで受け取るキーと合わせる
-
+export const predictRegion = async (audioBlob) => {
     try {
-        const response = await fetch("http://localhost:8000/predict", {
-            method: "POST",
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error("API request failed");
-        }
-
-        return await response.json(); // JSONデータを返す
+      const response = await fetch("http://localhost:8000/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/octet-stream", // バイナリデータを送信
+        },
+        body: audioBlob, // ダミーデータを送信
+      });
+  
+      if (!response.ok) {
+        throw new Error("ネットワークエラーが発生しました");
+      }
+  
+      const result = await response.json();
+      return result;
     } catch (error) {
-        console.error("Error:", error);
-        return null;
+      console.error("APIエラー:", error);
+      throw error; // エラーを再スローしてApp.jsで処理
     }
-}
+  };
+  

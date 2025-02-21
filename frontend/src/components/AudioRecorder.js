@@ -15,13 +15,15 @@ const AudioRecorder = () => {
 
     mediaRecorder.current.onstop = async () => {
       const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
-      audioChunks.current = []; // 初期化
 
       // バイナリ化
       const arrayBuffer = await audioBlob.arrayBuffer();
 
       // バックエンドに送信
       await sendAudio(arrayBuffer);
+
+      // 録音データをリセット
+      audioChunks.current = [];
     };
 
     mediaRecorder.current.start();
@@ -29,16 +31,19 @@ const AudioRecorder = () => {
   };
 
   const stopRecording = () => {
-    mediaRecorder.current?.stop();
-    setRecording(false);
+    if (mediaRecorder.current && recording) {
+      mediaRecorder.current.stop();
+      setRecording(false);
+    }
+    audioChunks.current = []; // 録音データをリセット
   };
 
   const sendAudio = async (audioData) => {
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
         headers: {
-          "Content-Type": "application/octet-stream", // バイナリデータを送る
+          "Content-Type": "application/octet-stream",
         },
         body: audioData,
       });
