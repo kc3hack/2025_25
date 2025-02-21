@@ -8,7 +8,7 @@ class AudioSilenceRemover:
         self.whisper_model = whisper.load_model("small")
 
     def removeSilence(self, path: str) -> np.ndarray:
-        wave, channels, fps = read_audio(path)
+        wave, fps = read_audio(path)
         result = self.whisper_model.transcribe(path)
 
         segment_waves = []
@@ -16,7 +16,7 @@ class AudioSilenceRemover:
             start = int(segment["start"] * fps)
             end = int(segment["end"] * fps)
 
-            segment_waves.append(wave[start:end])
+            segment_waves.append(wave[:, start:end])
 
         wave = np.concat(segment_waves, axis=-1)
         
