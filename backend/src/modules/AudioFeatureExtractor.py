@@ -45,7 +45,10 @@ class AudioFeatureExtractor:
 
         features = []
 
-        cap = 25
+        idxs = torch.randint(0, waveArr.shape[0], (4000,))
+        waveArr = waveArr[idxs]
+
+        cap = 40
         for i in range(math.ceil(waveArr.shape[0] / cap)):
             features.append(self.extract_feature(waveArr[i*cap:(i+1)*cap]).detach().cpu())
 

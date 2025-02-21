@@ -1,6 +1,5 @@
-transformers
+transformersd
 accelerate
-pydub
 opencv-python
 jupyter
 moviepy
