@@ -1,11 +1,15 @@
 import numpy as np
 import whisper
+import torch
 
 from utils import read_audio
 
 class AudioSilenceRemover:
     def __init__(self):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        
         self.whisper_model = whisper.load_model("small")
+        self.whisper_model.to(device=device)
 
     def removeSilence(self, path: str) -> np.ndarray:
         wave, fps = read_audio(path)

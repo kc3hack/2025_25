@@ -1,4 +1,4 @@
-transformers
+transformersd
 accelerate
 pydub
 opencv-python

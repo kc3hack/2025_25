@@ -19,7 +19,7 @@ def main():
         "osaka": ["ADK", "AFV", "AHZ"]
     }
 
-    wave = AudioSilenceRemover().removeSilence("_temp.mp3")
+    remover = AudioSilenceRemover()
     augmenter = AudioAugmenter()
     extractor = AudioFeatureExtractor()
 
@@ -40,7 +40,7 @@ def main():
             wave = processor.standardize(wave)
 
             save_audio(wave, fps, "_temp.mp3")
-
+            wave = remover.removeSilence("_temp.mp3")
             os.remove("_temp.mp3")
 
             waves = augmenter.augment_audio(wave, fps)
