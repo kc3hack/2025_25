@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 
-from modules.AudioPreProcessor import AudioPreProcessor
-from modules.AudioFeatureExtractor import AudioFeatureExtractor
+from .modules.AudioPreProcessor import AudioPreProcessor
+from .modules.AudioFeatureExtractor import AudioFeatureExtractor
 
 def analyze_voice(audio_data: np.ndarray, sampling_rate: int) -> dict[str, float]:
     processor = AudioPreProcessor()
