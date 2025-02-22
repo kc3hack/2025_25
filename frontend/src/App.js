@@ -10,6 +10,7 @@ function App() {
   // 録音データが取得されたときに呼び出される
   const handleAudioData = (blob) => {
     setAudioBlob(blob);
+    //console.log("あ");
   };
 
   const handlePredict = async () => {
