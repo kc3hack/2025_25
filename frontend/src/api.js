@@ -1,22 +1,21 @@
 export const predictRegion = async (audioBlob) => {
-    try {
-      const response = await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/octet-stream", // バイナリデータを送信
-        },
-        body: audioBlob, // ダミーデータを送信
+  try {
+      const formData = new FormData();
+      formData.append("file", audioBlob, "audio.wav");
+
+      const response = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          body: formData,
       });
-  
+
       if (!response.ok) {
-        throw new Error("ネットワークエラーが発生しました");
+          throw new Error("サーバーからエラーが返されました");
       }
-  
+
       const result = await response.json();
       return result;
-    } catch (error) {
+  } catch (error) {
       console.error("APIエラー:", error);
       throw error; // エラーを再スローしてApp.jsで処理
-    }
-  };
-  
+  }
+};

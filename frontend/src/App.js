@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { predictRegion } from "./api"; // API通信を担う関数
-import AudioRecorder from "./AudioRecorder"; // 録音コンポーネント
+import AudioRecorder from './components/AudioRecorder';
 import "./App.css";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   // 録音データが取得されたときに呼び出される
   const handleAudioData = (blob) => {
     setAudioBlob(blob);
+    //console.log("あ");
   };
 
   const handlePredict = async () => {
