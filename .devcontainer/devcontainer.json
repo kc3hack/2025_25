@@ -1,11 +1,11 @@
 {
-    "name": "hackason_container_backend",
+    "name": "hackason_container",
     "image": "24_0044/hackason:1.0.0",
     "runArgs": [
         // "--gpus",
         // "all",
         "--name",
-        "hackason_container_backend",
+        "hackason_container",
         "-p",
         "8000:8000",
         "-p",
