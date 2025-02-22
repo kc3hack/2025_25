@@ -5,3 +5,5 @@ jupyter
 moviepy
 yt_dlp
 openai-whisper
+fastapi
+soundfile

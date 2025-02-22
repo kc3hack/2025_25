@@ -56,7 +56,7 @@ def main():
                     linear.weight.copy_(weight)
                     linear.bias.copy_(bias)
 
-                torch.save(linear, "./src/data/svm_linear_" + str(data_nums) + ".pth")
+                torch.save(linear, "./src/ckpts/svm_linear_" + str(data_nums) + ".pth")
                 print("saved!")
 
 if __name__ == "__main__":
