@@ -1,3 +1,4 @@
+import torchaudio
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,7 @@ app = FastAPI()
 # CORS設定（フロントエンドのURLを指定）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # ReactアプリのURL
+    allow_origins=["http://localhost:3000","http://127.0.0.1:3000"],  # ReactアプリのURL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,17 +51,18 @@ async def upload_audio(request: Request):
         audio_stream = io.BytesIO(audio_data)
         
         ##audio_data, sr = sf.read(audio_stream)
-        audio_stream.seek(0)
-        with open("./test.wav", 'wb') as f:
-            f.write(audio_data)
-        audio_data, sr = librosa.load(audio_stream, sr=None)
-        
-
-        
-
-        # AIモデルで判定（仮の処理）
-        result = analyze_voice(audio_data,sr) # 仮の結果を返す
-
+        # audio_stream.seek(0)
+        # with open("./test.wav", 'wb') as f:
+        #     f.write(audio_data)
+        # print(audio_stream)
+        # audio_data, sr = librosa.load(audio_stream, sr=None)
+        audio_data, sr =torchaudio.load(audio_stream)
+        audio_data=audio_data.detach().cpu().numpy()
+        if audio_data.shape[1]/sr<5:
+            result={"name": "error", "content": "音声の長さが短すぎます"}
+        else:
+            result = analyze_voice(audio_data,sr) 
+       
         # 結果を返す
         return JSONResponse(content=result)
 

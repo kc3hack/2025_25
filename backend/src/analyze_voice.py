@@ -16,7 +16,7 @@ def analyze_voice(audio_data: np.ndarray, sampling_rate: int) -> dict[str, float
         features = extractor.extract_feature(audio_data, 16000)[0]
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        linear = torch.load("./src/ckpts/svm_linear_50000.pth", weights_only=False)
+        linear = torch.load("./src/ckpts/svm_linear_20000.pth", weights_only=False)
         linear.to(device=device)
 
         result = linear.forward(features).mean(dim=0)
