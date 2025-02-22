@@ -22,14 +22,17 @@ class AudioFeatureExtractor:
         self.feature_extractor = feature_extractor
         self.model = model
 
-    def extract_feature(self, waves: np.ndarray) -> torch.Tensor:
-        assert len(waves.shape) == 2
-        B, L = waves.shape
+    def extract_feature(self, wave: np.ndarray, fps: int) -> torch.Tensor:
+        assert len(wave.shape) == 2
+        
+        wave = wave[:, :wave.shape[-1] - wave.shape[-1] % (fps * 5)].reshape(-1, fps * 5)
+
+        B, L = wave.shape
 
         assert L == 16000 * 5
 
         inputs = self.feature_extractor(
-            waves,
+            wave,
             return_tensors="pt",
             sampling_rate=16000
         ).to(device=self.model.device)
@@ -40,7 +43,6 @@ class AudioFeatureExtractor:
         return outputs.last_hidden_state
 
     def extract_features(self, waves: list[np.ndarray], fps: int) -> torch.Tensor:
-        waves = [wave[:, :wave.shape[-1] - wave.shape[-1] % (fps * 5)].reshape(-1, fps * 5) for wave in waves]
         waveArr = np.concatenate(waves, axis=0)
 
         features = []
@@ -50,6 +52,6 @@ class AudioFeatureExtractor:
 
         cap = 40
         for i in range(math.ceil(waveArr.shape[0] / cap)):
-            features.append(self.extract_feature(waveArr[i*cap:(i+1)*cap]).detach().cpu())
+            features.append(self.extract_feature(waveArr[i*cap:(i+1)*cap], fps).detach().cpu())
 
         return torch.cat(features, dim=0)
