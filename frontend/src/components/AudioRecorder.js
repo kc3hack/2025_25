@@ -6,22 +6,25 @@ const AudioRecorder = () => {
   const audioChunks = useRef([]);
 
   const startRecording = async () => {
-    console.log(navigator.mediaDevices,navigator);
+    
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder.current = new MediaRecorder(stream);
 
     mediaRecorder.current.ondataavailable = (event) => {
+      
       audioChunks.current.push(event.data);
     };
 
     mediaRecorder.current.onstop = async () => {
+      
       const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
-
+      
       // バイナリ化
       const arrayBuffer = await audioBlob.arrayBuffer();
-
+     
       // バックエンドに送信
       await sendAudio(arrayBuffer);
+
 
       // 録音データをリセット
       audioChunks.current = [];

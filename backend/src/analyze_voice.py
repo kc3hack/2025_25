@@ -1,6 +1,6 @@
 import numpy as np
 
-from modules.AudioPreProcessor import AudioPreProcessor
+from .modules.AudioPreProcessor import AudioPreProcessor
 
 def analyze_voice(audio_data: np.ndarray, sampling_rate: int) -> dict[str, float]:
     processor = AudioPreProcessor()

@@ -4,13 +4,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import io
 import librosa
 import soundfile as sf
+from .analyze_voice import analyze_voice
 
 app = FastAPI()
 
 # CORS設定（フロントエンドのURLを指定）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ReactアプリのURL
+    allow_origins=["http://localhost:3000"],  # ReactアプリのURL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,7 +48,14 @@ async def upload_audio(request: Request):
         audio_data = await request.body()
         print(f"受け取った音声データの長さ: {len(audio_data)} バイト")
         audio_stream = io.BytesIO(audio_data)
-        audio_data, sr = sf.read(audio_stream)
+        
+        ##audio_data, sr = sf.read(audio_stream)
+        audio_stream.seek(0)
+        with open("./test.wav", 'wb') as f:
+            f.write(audio_data)
+        audio_data, sr = librosa.load(audio_stream, sr=None)
+        
+
         
 
         # AIモデルで判定（仮の処理）
