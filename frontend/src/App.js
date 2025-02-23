@@ -1,27 +1,46 @@
-import { useState } from "react";
-import Logo from './components/Logo';
-import ReadingScript from "./components/ReadingScript";
+import { useState, useEffect } from "react";
 import AudioRecorder from './components/AudioRecorder';
 import ResultField from './components/ResultField';
 import "./App.css";
 
+const scripts = [
+  "こんにちは！", "天気がいいですね", "今日は何をしますか？", "好きな食べ物は何ですか？",
+  "旅行に行きたい場所は？", "最近読んだ本は？", "趣味は何ですか？", "週末の予定は？"
+];
+
 function App() {
   const [result, setResult] = useState(null);
+  const [displayScripts, setDisplayScripts] = useState([]);
   const [recording, setRecording] = useState(false);
+
+  useEffect(() => {
+    if (recording) {
+      // 録音開始時に3つのランダムなスクリプトを選ぶ
+      const shuffled = [...scripts].sort(() => 0.5 - Math.random()).slice(0, 3);
+      setDisplayScripts(shuffled);
+    } else {
+      setDisplayScripts([]); // 録音が終わったらスクリプトを非表示
+    }
+  }, [recording]);
 
   return (
     <div className="App">
       <header className="App-header">
-        <Logo />
-
         <h1>出身地判定アプリ</h1>
         
-        <ReadingScript recording={recording} />
-        <br />
+        {recording && (
+          <>
+            <p>読んでみてください：</p>
+            <div className="script-container">
+              {displayScripts.map((script, index) => (
+                <div key={index} className="script-box">{script}</div>
+              ))}
+            </div>
+          </>
+        )}
         
         {/* 録音コンポーネント */}
         <AudioRecorder onReceiveResponse={setResult} setRecording={setRecording} />
-        <br />
 
         {/* 判定結果を出力 */}
         <ResultField result={result} />
