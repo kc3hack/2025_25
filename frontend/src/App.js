@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { predictRegion } from "./api"; // API通信を担う関数
 import AudioRecorder from './components/AudioRecorder';
 import ResultField from './components/ResultField';
 import "./App.css";
