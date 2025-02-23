@@ -54,21 +54,26 @@ const endRecording = async (recording) => {
 };
 
 const AudioRecorder = (props) => {
-  const [recording, setRecording] = useState(null);
+  const [records, setRecords] = useState(null);
+
+  const onReceiveResponse = props.onReceiveResponse
+  const setRecording = props.setRecording
 
   const onButtonClick = async ()=>{
-    if(recording === null){
-      setRecording(await createRecording());
+    if(records === null){
+      setRecords(await createRecording());
+      setRecording(true);
     }
     else{
-      setRecording(null);
-      props.onReceiveResponse(await endRecording(recording));
+      setRecords(null);
+      setRecording(false);
+      onReceiveResponse(await endRecording(records));
     }
   }
 
   return (
-    <button className="recording-button" data-recording={recording !== null} onClick={onButtonClick}>
-      {recording === null ? "録音開始" : "送信"}
+    <button className="recording-button" data-recording={records !== null} onClick={onButtonClick}>
+      {records === null ? "録音開始" : "送信"}
     </button>
   );
 };
