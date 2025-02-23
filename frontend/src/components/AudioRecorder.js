@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./AudioRecorder.css";
 
 const sendAudio = async (audioData) => {
   try {
@@ -66,8 +67,8 @@ const AudioRecorder = (props) => {
   }
 
   return (
-    <button onClick={onButtonClick}>
-      {recording === null ? "録音開始" : "停止して送信"}
+    <button className="recording-button" data-recording={recording !== null} onClick={onButtonClick}>
+      {recording === null ? "録音開始" : "送信"}
     </button>
   );
 };

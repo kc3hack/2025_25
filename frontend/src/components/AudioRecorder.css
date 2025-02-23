@@ -1,0 +1,13 @@
+.recording-button{
+    background-color: #fff;
+
+    border: 2px black solid;
+    border-radius: 75px;
+
+    width: 100px;
+    height: 75px;
+}
+
+.recording-button[data-recording="true"]{
+    background-color: #f55;
+}

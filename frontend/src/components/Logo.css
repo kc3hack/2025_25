@@ -1,0 +1,41 @@
+.logo{
+    position: absolute;
+    margin: 20px;
+
+    left: 0px;
+    top: 0px;
+}
+
+.logo > *{
+    position: absolute;
+}
+
+.char-K{
+    left: 1px;
+    top: 0px;
+
+    font-size: 35px;
+    font-weight: bold;
+}
+.char-A{
+    left: 0px;
+    top: 33px;
+
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.char-anari{
+    left: 35px;
+    top: 17px;
+
+    font-size: 18px;
+    font-weight: bold;
+}
+.char-tamaii{
+    left: 35px;
+    top: 49px;
+
+    font-size: 18px;
+    font-weight: bold;
+}
