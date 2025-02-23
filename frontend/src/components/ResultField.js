@@ -1,29 +1,65 @@
 import { useState, useEffect } from "react";
 import "./ResultField.css"; // スタイルファイルを追加
 
+const ScceedResult = (probs) => {
+  const content = probs.content;
+
+  let max = {key: null, value: 0};
+  const percentages = {};
+  for(const key in content){
+    const percentage = content[key] * 100
+    percentages[key] = (percentage < 10 ? " " : "") + String(Math.floor(percentage));
+
+    if(max.value < percentage) max = {key: key, value: percentage}
+  }
+
+  return <>
+    <pre>
+      大阪 : {percentages["大阪"]} % {"\n"}
+      京都 : {percentages["京都"]} % {"\n"}
+      兵庫 : {percentages["兵庫"]} % {"\n"}
+    </pre>
+    <pre>あなたは {max.key}人 です！</pre>
+  </>
+}
+
+const FailedResult = () => <pre>分析に失敗しました。再度、５秒以上話してから送信してください。</pre>
+
+const ResultAnalysis = (probs) => {
+  const result = probs.result;
+
+  const faces = "😎 😋 😃 😇 😂 🤪 🤗 🤖".split(" ")
+  const face = faces[Math.floor(Math.random() * faces.length)]
+
+  return (<>
+    <h2>判定結果{face}</h2>
+    {
+      result.type === "success" ?
+      <ScceedResult content={result.content} /> :
+      <FailedResult />
+    }
+  </>)
+}
+
 const ResultField = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [current, setCurrent] = useState(null);
+
   const result = props.result;
+  const recording = props.recording;
 
   useEffect(() => {
-    if (result) {
-      setVisible(true); // 新しい結果を受け取ったら表示
-    }
-  }, [result]);
-
-  const handleClose = () => {
-    setVisible(false);
-  };
+    if (result) setCurrent(result); // 新しい結果を受け取ったら表示
+    if (recording) setCurrent(null);
+  }, [result, recording]);
 
   return (
-    <div className={`result-container ${visible && result ? "show" : ""}`}>
-      {visible && result && (
+    <div className={`result-container ${current ? "show" : ""}`}>
+      {current &&
         <div className="result-box">
-          <h2>判定結果😎</h2>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-          <button onClick={handleClose} className="close-button">閉じる</button>
+          <ResultAnalysis result={current}/>
+          <button onClick={() => setCurrent(null)} className="close-button">閉じる</button>
         </div>
-      )}
+      }
     </div>
   );
 };

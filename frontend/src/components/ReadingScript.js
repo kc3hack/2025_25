@@ -5,10 +5,8 @@ const scripts = [
     "旅行に行きたい場所は？", "最近読んだ本は？", "趣味は何ですか？", "週末の予定は？"
 ];
   
-const ReadingScript = (props) => {
+const ReadingScript = () => {
     const [displayScripts, setDisplayScripts] = useState([]);
-
-    const recording = props.recording;
 
     useEffect(() => {
         // 3つのランダムなスクリプトを選ぶ
