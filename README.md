@@ -59,6 +59,33 @@ K.A.N.S.A.Iというお題から、K.（かなり） A.（あたまのいい） 
 
 <!-- 使用技術を入力してください -->
 
+- データの前処理
+    1. 音声のサンプリングレートを16000に変換する
+    2. 波形の振幅を標準化する
+    3. OpenAI whisper の文字起こしを用いて、沈黙部分を削る
+
+- 特徴量抽出（HuBERT）
+    1. 音声データを５秒間隔でN個に区切る
+    2. HuBERTの事前学習済みモデルに入力して、N $\times$ T 本の特徴量ベクトルを得る
+    - （T は５秒の音声をHuBERTがトークン分けした数）
+
+- 分類（SVM）
+    1. HuBERTで抽出した特徴量ベクトルを学習データとして、SVMをscikit-learnを用いて学習
+    2. 重みをtorch.Linearに移植して、推論する
+    3. 結果にsoftmaxをかけて、確率分布とする
+
+
+## 参照
+
+アプリケーションの作成にあたって、学習用データと、事前学習済みのHuBERTモデルに以下のものを使用しました。
+
+- 学習用データ
+    - [JTubeSpeech-ASV](https://sites.google.com/site/shinnosuketakamichi/research-topics/jtubespeech-asv_corpus)
+    - [方言録音資料シリーズ](https://mmsrv.ninjal.ac.jp/hogenrokuon_siryo/?utm_source=chatgpt.com)
+
+- 事前学習済みモデル
+    - [rinna/japanese-hubert-base](https://huggingface.co/rinna/japanese-hubert-base)
+
 
 <!--
 markdownの記法はこちらを参照してください！
