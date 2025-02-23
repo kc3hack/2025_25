@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-const AudioRecorder = () => {
+const AudioRecorder = (props) => {
   const [recording, setRecording] = useState(false);
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
@@ -54,6 +54,8 @@ const AudioRecorder = () => {
 
       const result = await response.json();
       console.log("サーバーからのレスポンス:", result);
+
+      props.onReceiveResponse(result)
     } catch (error) {
       console.error("音声データ送信エラー:", error);
     }
