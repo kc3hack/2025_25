@@ -1,72 +1,74 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+
+const sendAudio = async (audioData) => {
+  try {
+    const response = await fetch("http://localhost:8000/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+      body: audioData,
+    });
+
+    const result = await response.json();
+    console.log("サーバーからのレスポンス:", result);
+
+    return result;
+  } catch (error) {
+    console.error("音声データ送信エラー:", error);
+    return {"type": "error", "contents": "音声データの送信に失敗しました..."};
+  }
+};
+
+const createRecording = async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const recorder = new MediaRecorder(stream);
+
+  recorder.start()
+
+  const getAudioBrob = async () => {
+    const promise = new Promise((res, rej)=>{
+      recorder.ondataavailable = (event) => {
+        res(new Blob([event.data], { type: "audio/wav" }))
+      }
+    })
+
+    recorder.stop()
+
+    return promise
+  }
+
+  return {get: ()=>getAudioBrob()};
+};
+
+const endRecording = async (recording) => {
+  if(recording === null) throw new Error();
+
+  const audioBlob = await recording.get();
+
+  const arrayBuffer = await audioBlob.arrayBuffer();
+  const result = await sendAudio(arrayBuffer);
+
+  return result;
+};
 
 const AudioRecorder = (props) => {
-  const [recording, setRecording] = useState(false);
-  const mediaRecorder = useRef(null);
-  const audioChunks = useRef([]);
+  const [recording, setRecording] = useState(null);
 
-  const startRecording = async () => {
-    
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder.current = new MediaRecorder(stream);
-
-    mediaRecorder.current.ondataavailable = (event) => {
-      
-      audioChunks.current.push(event.data);
-    };
-
-    mediaRecorder.current.onstop = async () => {
-      
-      const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
-      
-      // バイナリ化
-      const arrayBuffer = await audioBlob.arrayBuffer();
-     
-      // バックエンドに送信
-      await sendAudio(arrayBuffer);
-
-
-      // 録音データをリセット
-      audioChunks.current = [];
-    };
-
-    mediaRecorder.current.start();
-    setRecording(true);
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorder.current && recording) {
-      mediaRecorder.current.stop();
-      setRecording(false);
+  const onButtonClick = async ()=>{
+    if(recording === null){
+      setRecording(await createRecording());
     }
-    audioChunks.current = []; // 録音データをリセット
-  };
-
-  const sendAudio = async (audioData) => {
-    try {
-      const response = await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/octet-stream",
-        },
-        body: audioData,
-      });
-
-      const result = await response.json();
-      console.log("サーバーからのレスポンス:", result);
-
-      props.onReceiveResponse(result)
-    } catch (error) {
-      console.error("音声データ送信エラー:", error);
+    else{
+      setRecording(null);
+      props.onReceiveResponse(await endRecording(recording));
     }
-  };
+  }
 
   return (
-    <div>
-      <button onClick={recording ? stopRecording : startRecording}>
-        {recording ? "停止" : "録音開始"}
-      </button>
-    </div>
+    <button onClick={onButtonClick}>
+      {recording === null ? "録音開始" : "停止して送信"}
+    </button>
   );
 };
 

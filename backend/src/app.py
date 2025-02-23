@@ -26,13 +26,13 @@ async def upload_audio(request: Request):
         print(f"受け取った音声データの長さ: {len(audio_data)} バイト")
         audio_stream = io.BytesIO(audio_data)
         
-       
         audio_data, sr =torchaudio.load(audio_stream)
         audio_data=audio_data.detach().cpu().numpy()
+
         if audio_data.shape[1]/sr<5:
-            result={"name": "error", "content": "音声の長さが短すぎます"}
+            result={"type": "error", "content": "音声の長さが短すぎます"}
         else:
-            result = analyze_voice(audio_data,sr) 
+            result={"type": "success", "content": analyze_voice(audio_data,sr)}
        
         # 結果を返す
         return JSONResponse(content=result)
