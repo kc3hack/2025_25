@@ -1,4 +1,4 @@
-transformersd
+transformers
 accelerate
 opencv-python
 jupyter
@@ -6,4 +6,4 @@ moviepy
 yt_dlp
 openai-whisper
 fastapi
-soundfile
+uvicorn
