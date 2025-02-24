@@ -12,3 +12,7 @@ COPY ./requirements.txt /opt
 RUN pip install --no-cache-dir -r /opt/requirements.txt
 
 RUN apt update && apt upgrade -y && apt install -y unzip && apt clean && rm -rf /var/lib/apt/lists/*
+
+RUN cd /opt && git clone https://github.com/kc3hack/2025_25.git
+
+ENTRYPOINT exec /bin/bash
