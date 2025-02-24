@@ -8,6 +8,7 @@ import "./App.css";
 function App() {
   const [result, setResult] = useState(null);
   const [recording, setRecording] = useState(false);
+  const [waiting, setWaiting] = useState(false);
 
   useEffect(() => {
     setResult(null);
@@ -26,11 +27,11 @@ function App() {
         </>)}
         
         {/* 録音コンポーネント */}
-        <AudioRecorder onReceiveResponse={setResult} setRecording={setRecording} />
+        <AudioRecorder onReceiveResponse={setResult} setRecording={setRecording} setWaiting={setWaiting} />
         <br />
 
         {/* 判定結果を出力 */}
-        <ResultField result={result} recording={recording} />
+        <ResultField result={result} recording={recording} waiting={waiting} />
       </header>
     </div>
   );

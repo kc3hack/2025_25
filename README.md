@@ -29,10 +29,11 @@ A.I : AI
 [デモ動画はこちら](./demo_movie.mov)
 <!-- 開発したプロダクトの操作説明について入力してください。また、操作説明デモ動画があれば、埋め込みやリンクを記載してください -->
 
-1. VSCodeでコンテナを起動
-    - VSCodeのdevcontainers拡張機能で、Dockerコンテナを起動する
+1. コンテナを起動
+    - ターミナルで `source run_container.sh` を実行
+    - コンテナが起動してアタッチされる
 2. サーバーの起動
-    - ターミナルで `source run_servers.sh` を実行
+    - コンテナに接続したターミナルで `source run_servers.sh` を実行
 3. アプリケーションに接続
     - ブラウザで `http://localhost:3000` を開く
 4. 声を録音する

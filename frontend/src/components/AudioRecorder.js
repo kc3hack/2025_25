@@ -58,6 +58,7 @@ const AudioRecorder = (props) => {
 
   const onReceiveResponse = props.onReceiveResponse
   const setRecording = props.setRecording
+  const setWaiting = props.setWaiting
 
   const onButtonClick = async ()=>{
     if(records === null){
@@ -67,7 +68,9 @@ const AudioRecorder = (props) => {
     else{
       setRecords(null);
       setRecording(false);
+      setWaiting(true);
       onReceiveResponse(await endRecording(records));
+      setWaiting(false);
     }
   }
 

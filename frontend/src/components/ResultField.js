@@ -41,24 +41,41 @@ const ResultAnalysis = (probs) => {
   </>)
 }
 
+const WaitingField = () => {
+  return (<>
+    <pre>分析中です、少々お待ちください...</pre>
+  </>)
+}
+
 const ResultField = (props) => {
   const [current, setCurrent] = useState(null);
 
   const result = props.result;
   const recording = props.recording;
+  const waiting = props.waiting;
 
   useEffect(() => {
     if (result) setCurrent(result); // 新しい結果を受け取ったら表示
     if (recording) setCurrent(null);
   }, [result, recording]);
 
+  console.log(waiting)
+
   return (
-    <div className={`result-container ${current ? "show" : ""}`}>
-      {current &&
-        <div className="result-box">
-          <ResultAnalysis result={current}/>
-          <button onClick={() => setCurrent(null)} className="close-button">閉じる</button>
-        </div>
+    <div className={`result-container show`}>
+      {
+        waiting ?
+        <WaitingField /> :
+        <>
+          {current !== null &&
+            <div className="result-box">
+              {
+                <ResultAnalysis result={current}/>
+              }
+              <button onClick={() => setCurrent(null)} className="close-button">閉じる</button>
+            </div>
+          }
+        </>
       }
     </div>
   );
