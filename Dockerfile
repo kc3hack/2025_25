@@ -15,4 +15,4 @@ RUN apt update && apt upgrade -y && apt install -y unzip && apt clean && rm -rf 
 
 RUN cd /opt && git clone https://github.com/kc3hack/2025_25.git
 
-ENTRYPOINT exec /bin/bash
+ENTRYPOINT cd /opt/2025_25 && source run_servers.sh && exec /bin/bash
